@@ -44,6 +44,7 @@ const handler = nc()
         dataAbertura: new Date(),
         foto: imagem?.media.url,
         solicitante: usuario.nome,
+        idSolicitante: userId,
         emailSolicitante: usuario.email
       }
 
