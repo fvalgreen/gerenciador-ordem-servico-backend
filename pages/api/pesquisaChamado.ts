@@ -5,7 +5,7 @@ import { ResponseDefault } from "@/types/ResponseDefault";
 import { ChamadosModel } from "@/models/ChamadosModel";
 import { UsuarioModel } from "@/models/UsuarioModel";
 
-const pesquisaEndPoint = async (req: NextApiRequest, res: NextApiResponse<ResponseDefault | any[]>) => {
+const pesquisaChamadoEndPoint = async (req: NextApiRequest, res: NextApiResponse<ResponseDefault | any[]>) => {
   try {
     if(req.method === 'GET'){
       if(req?.query?.id){
@@ -33,4 +33,4 @@ const pesquisaEndPoint = async (req: NextApiRequest, res: NextApiResponse<Respon
 
 };
 
-export default validarToken(connectMongoDB(pesquisaEndPoint));
+export default validarToken(connectMongoDB(pesquisaChamadoEndPoint));
