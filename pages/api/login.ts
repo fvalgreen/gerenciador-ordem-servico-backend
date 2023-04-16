@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import type { ResponseDefault } from "@/types/ResponseDefault";
 import { UsuarioModel } from "@/models/UsuarioModel";
 import { connectMongoDB } from "@/middlewares/connectMongoDB";
+import { politicaCORS } from "@/middlewares/politicaCORS";
 
 const endPointLogin = async (
   req: NextApiRequest,
@@ -36,4 +37,4 @@ const endPointLogin = async (
   return res.status(405).json({ erro: "Método informado não é válido" });
 };
 
-export default connectMongoDB(endPointLogin);
+export default politicaCORS(connectMongoDB(endPointLogin));

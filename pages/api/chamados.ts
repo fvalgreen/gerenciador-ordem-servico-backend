@@ -7,6 +7,7 @@ import nc from "next-connect";
 import { UsuarioModel } from "@/models/UsuarioModel";
 import { ChamadosModel } from "@/models/ChamadosModel";
 import { ChamadosPadrao } from "@/types/ChamadosPadrao";
+import { politicaCORS } from "@/middlewares/politicaCORS";
 
 const handler = nc()
   .use(upload.single("file"))
@@ -70,4 +71,4 @@ const handler = nc()
     }
   };
 
-  export default validarToken(connectMongoDB(handler));
+  export default politicaCORS(validarToken(connectMongoDB(handler)));

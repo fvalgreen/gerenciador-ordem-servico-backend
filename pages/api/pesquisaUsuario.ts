@@ -3,6 +3,7 @@ import { validarToken } from "@/middlewares/validarToken";
 import { connectMongoDB } from "@/middlewares/connectMongoDB";
 import { ResponseDefault } from "@/types/ResponseDefault";
 import { UsuarioModel } from "@/models/UsuarioModel";
+import { politicaCORS } from "@/middlewares/politicaCORS";
 
 const pesquisaUsuarioEndPoint = async (
   req: NextApiRequest,
@@ -52,4 +53,4 @@ const pesquisaUsuarioEndPoint = async (
   }
 };
 
-export default validarToken(connectMongoDB(pesquisaUsuarioEndPoint));
+export default politicaCORS(validarToken(connectMongoDB(pesquisaUsuarioEndPoint)));

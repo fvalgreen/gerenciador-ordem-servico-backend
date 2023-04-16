@@ -5,6 +5,7 @@ import { connectMongoDB } from "@/middlewares/connectMongoDB";
 import { UsuarioModel } from "@/models/UsuarioModel";
 import nc from "next-connect";
 import { CadastroRequisicao } from "@/types/CadastroRequisicao";
+import { politicaCORS } from "@/middlewares/politicaCORS";
 
 const handler = nc().post(async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -51,4 +52,4 @@ const handler = nc().post(async (req: NextApiRequest, res: NextApiResponse) => {
   }
 });
 
-export default connectMongoDB(handler);
+export default politicaCORS(connectMongoDB(handler));

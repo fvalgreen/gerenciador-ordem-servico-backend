@@ -1,4 +1,5 @@
 import { connectMongoDB } from "@/middlewares/connectMongoDB";
+import { politicaCORS } from "@/middlewares/politicaCORS";
 import { validarToken } from "@/middlewares/validarToken";
 import { UsuarioModel } from "@/models/UsuarioModel";
 import { ResponseDefault } from "@/types/ResponseDefault";
@@ -89,4 +90,4 @@ const editarusuario = async (req: NextApiRequest, res: NextApiResponse<ResponseD
   }
 };
 
-export default validarToken(connectMongoDB(editarusuario));
+export default politicaCORS(validarToken(connectMongoDB(editarusuario))) ;

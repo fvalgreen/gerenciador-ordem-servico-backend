@@ -4,6 +4,7 @@ import { connectMongoDB } from "@/middlewares/connectMongoDB";
 import { ResponseDefault } from "@/types/ResponseDefault";
 import { ChamadosModel } from "@/models/ChamadosModel";
 import { UsuarioModel } from "@/models/UsuarioModel";
+import { politicaCORS } from "@/middlewares/politicaCORS";
 
 const pesquisaChamadoEndPoint = async (req: NextApiRequest, res: NextApiResponse<ResponseDefault | any[]>) => {
   try {
@@ -33,4 +34,4 @@ const pesquisaChamadoEndPoint = async (req: NextApiRequest, res: NextApiResponse
 
 };
 
-export default validarToken(connectMongoDB(pesquisaChamadoEndPoint));
+export default politicaCORS(validarToken(connectMongoDB(pesquisaChamadoEndPoint)));
