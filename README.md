@@ -1,6 +1,10 @@
 # Gerenciador de Ordens de serviço
 
-Projeto em desenvolvimento de um serviço de gerenciamento de ordem de serviço com abertura e acompanhamento dos chamados.
+Projeto de um serviço de gerenciamento de ordem de serviço com abertura e acompanhamento dos chamados.
+
+### Implementação na Vercel
+
+[Gerenciador de Ordens de Serviço](https://gerenciador-ordem-servico-backend.vercel.app/)
 
 ### Tecnologias Utilizadas
 
