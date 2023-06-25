@@ -26,6 +26,7 @@ const endPointLogin = async (
       const token = jwt.sign({ id: usuarioEncontrado._id }, JWT_KEY);
 
       return res.status(200).json({
+        id: usuarioEncontrado._id,
         nome: usuarioEncontrado.nome,
         email: usuarioEncontrado.email,
         nivelAcesso: usuarioEncontrado.nivelAcesso,
