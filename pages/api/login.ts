@@ -33,7 +33,7 @@ const endPointLogin = async (
         token,
       });
     }
-    return res.status(405).json({ erro: "usuário ou senha não encontrado" });
+    return res.status(405).json({ erro: "Usuário ou senha não encontrado" });
   }
   return res.status(405).json({ erro: "Método informado não é válido" });
 };
