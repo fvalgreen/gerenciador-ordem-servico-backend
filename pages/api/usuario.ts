@@ -1,15 +1,51 @@
-import { connectMongoDB } from "@/middlewares/connectMongoDB";
-import { politicaCORS } from "@/middlewares/politicaCORS";
+import type { NextApiRequest, NextApiResponse } from "next";
 import { validarToken } from "@/middlewares/validarToken";
-import { UsuarioModel } from "@/models/UsuarioModel";
+import { connectMongoDB } from "@/middlewares/connectMongoDB";
 import { ResponseDefault } from "@/types/ResponseDefault";
+import { UsuarioModel } from "@/models/UsuarioModel";
+import { politicaCORS } from "@/middlewares/politicaCORS";
 import md5 from "md5";
-import { NextApiRequest, NextApiResponse } from "next";
 
-
-const editarusuario = async (req: NextApiRequest, res: NextApiResponse<ResponseDefault>) => {
+const pesquisaUsuarioEndPoint = async (
+  req: NextApiRequest,
+  res: NextApiResponse<ResponseDefault | any[]>
+) => {
   try {
-    if(req.method === "PUT"){
+    if (req.method === "GET") {
+      if (req?.query?.id) {
+        const usuario = await UsuarioModel.findById(req.query.id);
+        usuario.senha = null;
+
+        if (!usuario) {
+          return res.status(400).json({ erro: "Usuário não encontrado" });
+        }
+        return res.status(200).json(usuario);
+      } else {
+        const { filtro } = req.query;
+
+        if (!filtro || filtro.length < 2) {
+          return res
+            .status(400)
+            .json({
+              erro: "Favor informar pelo menos 2 caracteres para a busca",
+            });
+        }
+
+        const usuarios = await UsuarioModel.find({
+          $or: [
+            { nome: { $regex: filtro, $options: "i" } },
+            { email: { $regex: filtro, $options: "i" } },
+            { setor: { $regex: filtro, $options: "i" } },
+          ],
+        });
+
+        usuarios.forEach((user) => {
+          user.senha = null;
+        });
+
+        return res.status(200).json(usuarios);
+      }           
+    }else if(req.method === "PUT"){
       if(req?.query?.id){
 
         const usuario = await UsuarioModel.findById(req?.query?.id);
@@ -82,12 +118,15 @@ const editarusuario = async (req: NextApiRequest, res: NextApiResponse<ResponseD
         return res.status(200).json({msg: "Usuário alterado com sucesso"});
 
       }
+    }else{
+      return res.status(405).json({erro: "Método HTTP inmválido"})
     }
-    return res
   } catch (e) {
     console.log(e);
-    return res.status(500).json({erro: "Não foi possível editar o usuário" + e});
+    return res
+      .status(500)
+      .json({ erro: "Não foi possível encontrar o usuário" });
   }
 };
 
-export default politicaCORS(validarToken(connectMongoDB(editarusuario))) ;
+export default politicaCORS(validarToken(connectMongoDB(pesquisaUsuarioEndPoint)));
