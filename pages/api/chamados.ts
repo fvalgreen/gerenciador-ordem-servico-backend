@@ -140,7 +140,7 @@ const handler = nc()
       }
 
       if (chamadoEditado.funcionarioExecutor) {
-        chamado.funcionariosExecucao.push(chamadoEditado.funcionarioExecutor);
+        chamado.funcionariosExecucao = chamadoEditado.funcionarioExecutor;
       }
 
       if (chamadoEditado.observacoes) {
