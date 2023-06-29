@@ -49,6 +49,7 @@ const handler = nc()
         solicitante: usuario.nome,
         idSolicitante: userId,
         emailSolicitante: usuario.email,
+        setorSolicitante: usuario.setor
       };
 
       usuario.chamadosAbertos++;
