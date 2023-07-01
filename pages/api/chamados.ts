@@ -71,7 +71,8 @@ const handler = nc()
       try {
         const { userId, role } = req.query;
 
-        if(role !== "admin"){
+
+        if(role === "user"){
           const usuario = await UsuarioModel.findById(userId);
           if(!usuario){
             return res.status(400).json({erro: "Usuário não encontrado."})
@@ -128,7 +129,7 @@ const handler = nc()
       if (!chamado) {
         return res.status(400).json({ erro: "Chamado não encontrado" });
       }
-      
+
       if(chamado.idSolicitante === userId || role === "admin"){
 
         if (chamadoEditado.descricao && chamadoEditado.descricao.length > 5) {
