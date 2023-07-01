@@ -69,24 +69,41 @@ const handler = nc()
       res: NextApiResponse<ResponseDefault | any[]>
     ) => {
       try {
-        if (req?.query?.id) {
-          const usuarioId = req?.query?.id;
-          const usuario = await UsuarioModel.findById(usuarioId);
+        const { userId, role } = req.query;
 
-          if (!usuario) {
-            return res.status(400).json({ erro: "Usuário não encontrado" });
+        if(role !== "admin"){
+          const usuario = await UsuarioModel.findById(userId);
+          if(!usuario){
+            return res.status(400).json({erro: "Usuário não encontrado."})
           }
 
           const chamadosUsuario = await ChamadosModel.find({
-            idSolicitante: usuarioId,
-          });
-
+            idSolicitante: userId,
+          })
           return res.status(200).json(chamadosUsuario);
-        } else {
-          const chamados = await ChamadosModel.find();
-
-          return res.status(200).json(chamados);
+        }else if(role === 'admin'){
+          if (req?.query?.id) {
+            const usuarioId = req?.query?.id;
+            const usuario = await UsuarioModel.findById(usuarioId);
+  
+            if (!usuario) {
+              return res.status(400).json({ erro: "Usuário não encontrado" });
+            }
+  
+            const chamadosUsuario = await ChamadosModel.find({
+              idSolicitante: usuarioId,
+            });
+  
+            return res.status(200).json(chamadosUsuario);
+          } else {
+            const chamados = await ChamadosModel.find();
+  
+            return res.status(200).json(chamados);
+          }
+        }else{
+          return res.status(403).json({erro: "Usuário não autorizado"})
         }
+
       } catch (e) {
         console.log(e);
         return res
