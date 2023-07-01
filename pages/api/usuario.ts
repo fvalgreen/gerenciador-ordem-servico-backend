@@ -50,50 +50,7 @@ const pesquisaUsuarioEndPoint = async (
         return res.status(403).json({ erro: "Usuário não possui autorização" });
       }
     } else if (req.method === "PUT") {
-      if (req?.query?.id) {
-        const usuario = await UsuarioModel.findById(req?.query?.id);
-
-        if (!usuario) {
-          return res
-            .status(400)
-            .json({ erro: "Não foi possível encontrar o usuário" });
-        }
-
-        const { nome, email, senha, setor, nivelAcesso } = req.body;
-
-        if (nome && nome.length > 3) {
-          usuario.nome = nome;
-        }
-
-        if (
-          email &&
-          email.length > 5 &&
-          email.includes("@") &&
-          email.includes(".")
-        ) {
-          usuario.email = email;
-        }
-
-        if (senha && senha.length >= 6) {
-          usuario.senha = md5(senha);
-        }
-
-        if (setor && setor.length >= 3) {
-          usuario.setor = setor;
-        }
-
-        if (nivelAcesso) {
-          usuario.nivelAcesso = nivelAcesso;
-        }
-
-        await UsuarioModel.findByIdAndUpdate({ _id: usuario._id }, usuario);
-
-        return res.status(200).json({ msg: "Usuário alterado com sucesso" });
-      } else {
-        const { userId } = req?.query;
-
-        console.log(userId);
-
+      if (role === "user") {
         const usuario = await UsuarioModel.findById(userId);
 
         if (!usuario) {
@@ -102,7 +59,7 @@ const pesquisaUsuarioEndPoint = async (
             .json({ erro: "Não foi possível encontrar o usuário" });
         }
 
-        const { nome, email, senha, setor, nivelAcesso } = req.body;
+        const { nome, email, senha, setor } = req.body;
 
         if (nome && nome.length > 3) {
           usuario.nome = nome;
@@ -125,16 +82,88 @@ const pesquisaUsuarioEndPoint = async (
           usuario.setor = setor;
         }
 
-        if (nivelAcesso) {
-          usuario.nivelAcesso = nivelAcesso;
-        }
-
         await UsuarioModel.findByIdAndUpdate({ _id: usuario._id }, usuario);
 
         return res.status(200).json({ msg: "Usuário alterado com sucesso" });
+      } else if (role === "admin") {
+        if (req?.query?.id) {
+          const usuario = await UsuarioModel.findById(req?.query?.id);
+
+          if (!usuario) {
+            return res
+              .status(400)
+              .json({ erro: "Não foi possível encontrar o usuário" });
+          }
+
+          const { nome, email, senha, setor, nivelAcesso } = req.body;
+
+          if (nome && nome.length > 3) {
+            usuario.nome = nome;
+          }
+
+          if (
+            email &&
+            email.length > 5 &&
+            email.includes("@") &&
+            email.includes(".")
+          ) {
+            usuario.email = email;
+          }
+
+          if (senha && senha.length >= 6) {
+            usuario.senha = md5(senha);
+          }
+
+          if (setor && setor.length >= 3) {
+            usuario.setor = setor;
+          }
+
+          if (nivelAcesso) {
+            usuario.nivelAcesso = nivelAcesso;
+          }
+
+          await UsuarioModel.findByIdAndUpdate({ _id: usuario._id }, usuario);
+
+          return res.status(200).json({ msg: "Usuário alterado com sucesso" });
+        } else {
+          const usuario = await UsuarioModel.findById(userId);
+
+          if (!usuario) {
+            return res
+              .status(400)
+              .json({ erro: "Não foi possível encontrar o usuário" });
+          }
+
+          const { nome, email, senha, setor } = req.body;
+
+          if (nome && nome.length > 3) {
+            usuario.nome = nome;
+          }
+
+          if (
+            email &&
+            email.length > 5 &&
+            email.includes("@") &&
+            email.includes(".")
+          ) {
+            usuario.email = email;
+          }
+
+          if (senha && senha.length >= 6) {
+            usuario.senha = md5(senha);
+          }
+
+          if (setor && setor.length >= 3) {
+            usuario.setor = setor;
+          }          
+
+          await UsuarioModel.findByIdAndUpdate({ _id: usuario._id }, usuario);
+
+          return res.status(200).json({ msg: "Usuário alterado com sucesso" });
+        }
       }
     } else {
-      return res.status(405).json({ erro: "Método HTTP inmválido" });
+      return res.status(405).json({ erro: "Método HTTP inválido" });
     }
   } catch (e) {
     console.log(e);
