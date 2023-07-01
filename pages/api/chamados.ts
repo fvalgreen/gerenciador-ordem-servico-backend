@@ -114,60 +114,71 @@ const handler = nc()
   )
   .put(async (req: any, res: NextApiResponse<ResponseDefault>) => {
     try {
-      const { id } = req?.query;
+      const { userId, role } = req?.query;
+      const idChamado = req?.query?.id;
+
+      if(!idChamado){
+        return res.status(500).json({erro: "É necessário um id para editar um chamado"})
+      }
 
       const chamadoEditado = req.body as EditarChamadoPadrao;
 
-      const chamado = await ChamadosModel.findById(id);
+      const chamado = await ChamadosModel.findById(idChamado);
 
       if (!chamado) {
         return res.status(400).json({ erro: "Chamado não encontrado" });
       }
+      
+      if(chamado.idSolicitante === userId || role === "admin"){
 
-      if (chamadoEditado.descricao && chamadoEditado.descricao.length > 5) {
-        chamado.descricao = chamadoEditado.descricao;
-      }
-
-      const { file } = req;
-
-      if (file && file.originalname) {
-        const image = await uploadImagemCosmic(req);
-        if (image && image.media && image.media.url) {
-          if (chamadoEditado.modificarFotoFinal) {
-            chamado.fotoFinalServico = image.media.url;
-          } else {
-            chamado.foto = image.media.url;
+        if (chamadoEditado.descricao && chamadoEditado.descricao.length > 5) {
+          chamado.descricao = chamadoEditado.descricao;
+        }
+  
+        const { file } = req;
+  
+        if (file && file.originalname) {
+          const image = await uploadImagemCosmic(req);
+          if (image && image.media && image.media.url) {
+            if (chamadoEditado.modificarFotoFinal) {
+              chamado.fotoFinalServico = image.media.url;
+            } else {
+              chamado.foto = image.media.url;
+            }
           }
         }
+  
+        if (chamadoEditado.local && chamadoEditado.local.length >= 3) {
+          chamado.local = chamadoEditado.local;
+        }
+  
+        if (chamadoEditado.setorExecutor) {
+          chamado.setorExecutor = chamadoEditado.setorExecutor;
+        }
+  
+        if (chamadoEditado.status) {
+          chamado.status = chamadoEditado.status;
+        }
+  
+        if (chamadoEditado.dataExecucao) {
+          chamado.dataExecucao = chamadoEditado.dataExecucao;
+        }
+  
+        if (chamadoEditado.funcionarioExecutor) {
+          chamado.funcionariosExecucao = chamadoEditado.funcionarioExecutor;
+        }
+  
+        if (chamadoEditado.observacoes) {
+          chamado.observacoesSobreOChamado = chamadoEditado.observacoes;
+        }
+  
+        await ChamadosModel.findByIdAndUpdate({ _id: chamado._id }, chamado);
+  
+        return res.status(200).json({ msg: "Chamado alterado com sucesso" });
+      }else {
+        return res.status(403).json({erro: "O usuário não possui autorização para editar esse chamado"});
       }
 
-      if (chamadoEditado.local && chamadoEditado.local.length >= 3) {
-        chamado.local = chamadoEditado.local;
-      }
-
-      if (chamadoEditado.setorExecutor) {
-        chamado.setorExecutor = chamadoEditado.setorExecutor;
-      }
-
-      if (chamadoEditado.status) {
-        chamado.status = chamadoEditado.status;
-      }
-
-      if (chamadoEditado.dataExecucao) {
-        chamado.dataExecucao = chamadoEditado.dataExecucao;
-      }
-
-      if (chamadoEditado.funcionarioExecutor) {
-        chamado.funcionariosExecucao = chamadoEditado.funcionarioExecutor;
-      }
-
-      if (chamadoEditado.observacoes) {
-        chamado.observacoesSobreOChamado = chamadoEditado.observacoes;
-      }
-
-      await ChamadosModel.findByIdAndUpdate({ _id: chamado._id }, chamado);
-
-      return res.status(200).json({ msg: "Chamado alterado com sucesso" });
     } catch (e) {
       console.log(e);
       return res
