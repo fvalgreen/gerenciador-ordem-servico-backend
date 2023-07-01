@@ -36,6 +36,7 @@ export const validarToken = (handler: NextApiHandler) => (req: NextApiRequest, r
       }
 
       req.query.userId = decoded.id;
+      req.query.role = decoded.role;
     }
   } catch (e) {
     console.log(e);
