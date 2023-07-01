@@ -23,7 +23,10 @@ const endPointLogin = async (
     });
     if (usuariosEncontrados && usuariosEncontrados.length > 0) {
       const usuarioEncontrado = usuariosEncontrados[0];
-      const token = jwt.sign({ id: usuarioEncontrado._id, role: usuarioEncontrado.nivelAcesso }, JWT_KEY);
+      const token = jwt.sign(
+        { id: usuarioEncontrado._id, role: usuarioEncontrado.nivelAcesso },
+        JWT_KEY
+      );
 
       return res.status(200).json({
         id: usuarioEncontrado._id,

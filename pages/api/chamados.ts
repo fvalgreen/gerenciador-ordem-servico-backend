@@ -49,7 +49,7 @@ const handler = nc()
         solicitante: usuario.nome,
         idSolicitante: userId,
         emailSolicitante: usuario.email,
-        setorSolicitante: usuario.setor
+        setorSolicitante: usuario.setor,
       };
 
       usuario.chamadosAbertos++;
@@ -71,40 +71,38 @@ const handler = nc()
       try {
         const { userId, role } = req.query;
 
-
-        if(role === "user"){
+        if (role === "user") {
           const usuario = await UsuarioModel.findById(userId);
-          if(!usuario){
-            return res.status(400).json({erro: "Usuário não encontrado."})
+          if (!usuario) {
+            return res.status(400).json({ erro: "Usuário não encontrado." });
           }
 
           const chamadosUsuario = await ChamadosModel.find({
             idSolicitante: userId,
-          })
+          });
           return res.status(200).json(chamadosUsuario);
-        }else if(role === 'admin'){
+        } else if (role === "admin") {
           if (req?.query?.id) {
             const usuarioId = req?.query?.id;
             const usuario = await UsuarioModel.findById(usuarioId);
-  
+
             if (!usuario) {
               return res.status(400).json({ erro: "Usuário não encontrado" });
             }
-  
+
             const chamadosUsuario = await ChamadosModel.find({
               idSolicitante: usuarioId,
             });
-  
+
             return res.status(200).json(chamadosUsuario);
           } else {
             const chamados = await ChamadosModel.find();
-  
+
             return res.status(200).json(chamados);
           }
-        }else{
-          return res.status(403).json({erro: "Usuário não autorizado"})
+        } else {
+          return res.status(403).json({ erro: "Usuário não autorizado" });
         }
-
       } catch (e) {
         console.log(e);
         return res
@@ -118,8 +116,10 @@ const handler = nc()
       const { userId, role } = req?.query;
       const idChamado = req?.query?.id;
 
-      if(!idChamado){
-        return res.status(500).json({erro: "É necessário um id para editar um chamado"})
+      if (!idChamado) {
+        return res
+          .status(500)
+          .json({ erro: "É necessário um id para editar um chamado" });
       }
 
       const chamadoEditado = req.body as EditarChamadoPadrao;
@@ -130,14 +130,13 @@ const handler = nc()
         return res.status(400).json({ erro: "Chamado não encontrado" });
       }
 
-      if(chamado.idSolicitante === userId || role === "admin"){
-
+      if (chamado.idSolicitante === userId || role === "admin") {
         if (chamadoEditado.descricao && chamadoEditado.descricao.length > 5) {
           chamado.descricao = chamadoEditado.descricao;
         }
-  
+
         const { file } = req;
-  
+
         if (file && file.originalname) {
           const image = await uploadImagemCosmic(req);
           if (image && image.media && image.media.url) {
@@ -148,38 +147,41 @@ const handler = nc()
             }
           }
         }
-  
+
         if (chamadoEditado.local && chamadoEditado.local.length >= 3) {
           chamado.local = chamadoEditado.local;
         }
-  
+
         if (chamadoEditado.setorExecutor) {
           chamado.setorExecutor = chamadoEditado.setorExecutor;
         }
-  
+
         if (chamadoEditado.status) {
           chamado.status = chamadoEditado.status;
         }
-  
+
         if (chamadoEditado.dataExecucao) {
           chamado.dataExecucao = chamadoEditado.dataExecucao;
         }
-  
+
         if (chamadoEditado.funcionarioExecutor) {
           chamado.funcionariosExecucao = chamadoEditado.funcionarioExecutor;
         }
-  
+
         if (chamadoEditado.observacoes) {
           chamado.observacoesSobreOChamado = chamadoEditado.observacoes;
         }
-  
-        await ChamadosModel.findByIdAndUpdate({ _id: chamado._id }, chamado);
-  
-        return res.status(200).json({ msg: "Chamado alterado com sucesso" });
-      }else {
-        return res.status(403).json({erro: "O usuário não possui autorização para editar esse chamado"});
-      }
 
+        await ChamadosModel.findByIdAndUpdate({ _id: chamado._id }, chamado);
+
+        return res.status(200).json({ msg: "Chamado alterado com sucesso" });
+      } else {
+        return res
+          .status(403)
+          .json({
+            erro: "O usuário não possui autorização para editar esse chamado",
+          });
+      }
     } catch (e) {
       console.log(e);
       return res
