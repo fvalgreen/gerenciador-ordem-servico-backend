@@ -6,7 +6,7 @@ const UsuarioSchema = new Schema({
   senha: { type: String, required: true },
   setor: { type: String, required: true },
   chamadosAbertos: { type: Number, default: 0 },
-  nivelAcesso: { type: Number, default: 0 },
+  nivelAcesso: { type: String, default: "user" },
 });
 
 export const UsuarioModel =
