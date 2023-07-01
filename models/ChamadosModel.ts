@@ -12,6 +12,7 @@ const ChamadoSchema = new Schema({
   funcionariosExecucao: { type: Array, required: true, default: [] },
   solicitante: { type: String, required: true },
   idSolicitante: { type: String, required: true },
+  setorSolicitante: { type: String, required: true },
   emailSolicitante: { type: String, required: true },
   observacoesSobreOChamado: { type: String, default: "" },
   fotoFinalServico: { type: String, default: "" },
