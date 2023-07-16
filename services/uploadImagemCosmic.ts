@@ -15,6 +15,7 @@ const upload = multer({ storage: storage });
 
 const uploadImagemCosmic = async (req: any) => {
   if (req?.file?.originalname) {
+    
     if (
       !req.file.originalname.includes(".png") &&
       !req.file.originalname.includes(".jpg") &&
