@@ -15,7 +15,7 @@ const upload = multer({ storage: storage });
 
 const uploadImagemCosmic = async (req: any) => {
   if (req?.file?.originalname) {
-    
+
     if (
       !req.file.originalname.includes(".png") &&
       !req.file.originalname.includes(".jpg") &&
@@ -29,7 +29,7 @@ const uploadImagemCosmic = async (req: any) => {
     };
     return await bucketDevagram.media.insertOne({
       media: media_object,
-      folder: "publicacao",
+      folder: "chamados",
     });
   }
 };
